@@ -1,0 +1,108 @@
+/* ESTILOS PARA VISUALIZAÇÃO NA TELA */
+body {
+    background-color: #e9ecef;
+}
+
+.a4-container {
+    background-color: white;
+    padding: 25px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 8.5in;
+}
+
+/* --- MUDANÇAS AQUI --- */
+/* Estilo para a nova linha de cabeçalho principal */
+.cabecalho-principal {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: normal;
+}
+
+/* Centraliza os títulos "NOME COMPLETO" e "NOME DE GUERRA" */
+thead th {
+    text-align: center;
+}
+/* -------------------- */
+
+
+#corpo-tabela-lista td,
+#corpo-tabela-lista th {
+    text-transform: uppercase;
+}
+
+.table-bordered, .table-bordered th, .table-bordered td {
+    border: 1px solid #000 !important;
+}
+
+.assinatura-bloco {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.assinatura-bloco hr {
+    border-top: 1px solid #000;
+    max-width: 450px;
+    margin: 0 auto 8px auto;
+}
+
+.nome-responsavel, .posto-responsavel, .funcao-responsavel {
+    margin-bottom: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.area-botoes-nao-imprimir {
+    text-align: center;
+    padding: 20px;
+}
+
+.texto-negrito td {
+    font-weight: bold;
+}
+
+/* ESTILOS QUE SÓ SÃO APLICADOS NA HORA DE IMPRIMIR / SALVAR COMO PDF */
+@media print {
+    body {
+        background-color: white;
+        font-size: 10pt;
+    }
+
+    .area-botoes-nao-imprimir {
+        display: none;
+    }
+    
+    .a4-container {
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Ajuste fino no tamanho da fonte do cabeçalho principal para impressão */
+    .cabecalho-principal {
+        font-size: 11pt;
+        font-weight: normal; /* Garante que não fique em negrito por padrão */
+        padding: 8px !important;
+    }
+    
+    .table {
+        font-size: 9.0pt;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .table td, .table th {
+        padding: 4px 5px;
+        line-height: 1.1;
+    }
+    
+    .assinatura-bloco {
+        margin-top: 150px !important; 
+        page-break-inside: avoid;
+        font-size: 9pt;
+    }
+}
