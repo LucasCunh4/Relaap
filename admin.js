@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("ADMIN: Página de gerenciamento carregada.");
     const btnAddPessoa = document.getElementById('btn-add-pessoa');
     const btnAddResponsavel = document.getElementById('btn-add-responsavel');
     const tabelaPessoas = document.getElementById('tabela-pessoas');
@@ -11,20 +10,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const respPostoInput = document.getElementById('resp-posto');
     const respFuncaoInput = document.getElementById('resp-funcao');
 
-    console.log("ADMIN: Lendo dados do localStorage...");
     let bancoDePessoas = JSON.parse(localStorage.getItem('bancoDePessoas')) || [];
-    console.log("ADMIN: Pessoas encontradas:", bancoDePessoas);
     let bancoDeResponsaveis = JSON.parse(localStorage.getItem('bancoDeResponsaveis')) || [];
 
     function renderizarPessoas() {
         tabelaPessoas.innerHTML = '';
         bancoDePessoas.forEach((pessoa, index) => {
-            const linha = `<tr>
+            const linha = document.createElement('tr');
+            linha.innerHTML = `
                 <td>${pessoa.nomeCompleto}</td>
                 <td>${pessoa.nomeGuerra}</td>
-                <td><button class="btn btn-danger btn-sm" onclick="removerPessoa(${index})">X</button></td>
-            </tr>`;
-            tabelaPessoas.innerHTML += linha;
+                <td><button class="btn btn-danger btn-sm" data-index="${index}">X</button></td>
+            `;
+            tabelaPessoas.appendChild(linha);
         });
     }
 
@@ -39,15 +37,19 @@ document.addEventListener('DOMContentLoaded', function () {
             tabelaResponsaveis.innerHTML += linha;
         });
     }
-
-    window.removerPessoa = function(index) {
-        if (confirm('Tem certeza que deseja remover esta pessoa permanentemente?')) {
-            bancoDePessoas.splice(index, 1);
-            localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
-            console.log("ADMIN: Pessoa removida. Dados salvos:", localStorage.getItem('bancoDePessoas'));
-            renderizarPessoas();
+    
+    // --- NOVA FUNÇÃO PARA REMOVER PESSOA (MAIS SEGURA) ---
+    tabelaPessoas.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('btn-danger')) {
+            const index = event.target.getAttribute('data-index');
+            if (confirm('Tem certeza que deseja remover esta pessoa permanentemente?')) {
+                bancoDePessoas.splice(index, 1);
+                localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
+                renderizarPessoas();
+            }
         }
-    }
+    });
+
 
     window.removerResponsavel = function(index) {
         if (confirm('Tem certeza que deseja remover este responsável permanentemente?')) {
@@ -64,8 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (nomeCompleto && nomeGuerra) {
             bancoDePessoas.push({ nomeCompleto, nomeGuerra });
             localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
-            // MENSAGEM DE DIAGNÓSTICO IMPORTANTE
-            console.log("ADMIN: Nova pessoa adicionada. Dados salvos:", localStorage.getItem('bancoDePessoas'));
             renderizarPessoas();
             pessoaNomeCompletoInput.value = '';
             pessoaNomeGuerraInput.value = '';
@@ -84,6 +84,21 @@ document.addEventListener('DOMContentLoaded', function () {
             respNomeInput.value = '';
             respPostoInput.value = '';
             respFuncaoInput.value = '';
+        }
+    });
+
+    // --- CÓDIGO PARA ATIVAR A FUNÇÃO DE ARRASTAR E SALVAR A NOVA ORDEM ---
+    new Sortable(tabelaPessoas, {
+        animation: 150,
+        onEnd: function (evt) {
+            // Pega o item que foi movido
+            const itemMovido = bancoDePessoas.splice(evt.oldIndex, 1)[0];
+            // Insere o item na nova posição
+            bancoDePessoas.splice(evt.newIndex, 0, itemMovido);
+            // Salva a nova ordem no localStorage
+            localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
+            // Renderiza a tabela novamente para atualizar os índices dos botões
+            renderizarPessoas(); 
         }
     });
 
