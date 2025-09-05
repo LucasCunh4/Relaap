@@ -25,16 +25,16 @@ thead th {
 }
 
 /* =================================================== */
-/* CONTROLE AUTOMÁTICO DA LARGURA DAS COLUNAS        */
+/* CONTROLE AUTOMÁTICO - BASEADO NO NOME DE GUERRA (NOVO) */
 /* =================================================== */
 .coluna-nome-completo {
-  /* Força o texto a ficar sempre em uma única linha */
-  white-space: nowrap; 
-  /* Truque: Damos uma largura mínima simbólica para forçar a expansão */
-  width: 1%; 
+  /* Esta coluna agora será a flexível, ocupando o espaço que sobrar */
+  /* Deixamos ela vazia para que se expanda */
 }
 .coluna-nome-guerra {
-  /* Esta coluna se ajustará automaticamente ao espaço restante */
+  /* As regras "mágicas" agora estão aqui */
+  white-space: nowrap; 
+  width: 1%; 
 }
 /* =================================================== */
 
