@@ -28,10 +28,10 @@ thead th {
 /* CONTROLE MANUAL DA LARGURA DAS COLUNAS (AJUSTADO)   */
 /* =================================================== */
 .coluna-nome-completo {
-  width: 70%; /* A primeira coluna ocupará 70% do espaço */
+  width: 60%; /* A primeira coluna ocupará 70% do espaço */
 }
 .coluna-nome-guerra {
-  width: 30%; /* A segunda coluna ocupará os 30% restantes */
+  width: 40%; /* A segunda coluna ocupará os 30% restantes */
 }
 /* =================================================== */
 
