@@ -12,7 +12,6 @@ body {
     max-width: 8.5in;
 }
 
-/* --- MUDANÇAS AQUI --- */
 /* Estilo para a nova linha de cabeçalho principal */
 .cabecalho-principal {
     text-align: center;
@@ -24,7 +23,20 @@ body {
 thead th {
     text-align: center;
 }
-/* -------------------- */
+
+/* =================================================== */
+/* CONTROLE AUTOMÁTICO DA LARGURA DAS COLUNAS (NOVO) */
+/* =================================================== */
+.coluna-nome-completo {
+  /* Força o texto a ficar sempre em uma única linha */
+  white-space: nowrap; 
+  /* Truque: Damos uma largura mínima simbólica para forçar a expansão */
+  width: 1%; 
+}
+.coluna-nome-guerra {
+  /* Esta coluna se ajustará automaticamente ao espaço restante */
+}
+/* =================================================== */
 
 
 #corpo-tabela-lista td,
@@ -112,5 +124,4 @@ thead th {
     .posto-responsavel, .funcao-responsavel {
         font-size: 9pt;
     }
-}
 }
