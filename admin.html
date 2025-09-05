@@ -9,11 +9,22 @@
 </head>
 <body>
     <div class="container mt-4">
-        <header class="text-center mb-5">
+        <header class="text-center mb-4">
             <h1>Painel de Gerenciamento</h1>
             <p class="lead">Adicione, edite ou remova pessoas e responsáveis do sistema.</p>
             <a href="index.html">Voltar para a Página Principal</a>
         </header>
+
+        <section class="card mb-4">
+            <div class="card-header">
+                <h5>Transferência de Dados</h5>
+            </div>
+            <div class="card-body text-center">
+                <p>Use estes botões para salvar seus dados em um arquivo ou carregar de um backup.</p>
+                <button class="btn btn-info" id="btn-exportar">Exportar Dados</button>
+                <button class="btn btn-warning" id="btn-importar">Importar Dados</button>
+                <input type="file" id="input-import-file" class="d-none"> </div>
+        </section>
 
         <main class="row">
             <section class="col-md-6">
