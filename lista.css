@@ -25,13 +25,16 @@ thead th {
 }
 
 /* =================================================== */
-/* CONTROLE MANUAL DA LARGURA DAS COLUNAS (AJUSTADO)   */
+/* CONTROLE AUTOMÁTICO DA LARGURA DAS COLUNAS        */
 /* =================================================== */
 .coluna-nome-completo {
-  width: 60%; /* A primeira coluna ocupará 70% do espaço */
+  /* Força o texto a ficar sempre em uma única linha */
+  white-space: nowrap; 
+  /* Truque: Damos uma largura mínima simbólica para forçar a expansão */
+  width: 1%; 
 }
 .coluna-nome-guerra {
-  width: 40%; /* A segunda coluna ocupará os 30% restantes */
+  /* Esta coluna se ajustará automaticamente ao espaço restante */
 }
 /* =================================================== */
 
@@ -91,10 +94,9 @@ thead th {
         max-width: 100%;
     }
 
-    /* Ajuste fino no tamanho da fonte do cabeçalho principal para impressão */
     .cabecalho-principal {
         font-size: 11pt;
-        font-weight: normal; /* Garante que não fique em negrito por padrão */
+        font-weight: normal;
         padding: 8px !important;
     }
     
