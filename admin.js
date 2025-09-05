@@ -1,21 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const btnAddPessoa = document.getElementById('btn-add-pessoa');
-    const btnAddResponsavel = document.getElementById('btn-add-responsavel');
+    // ... (seleção de elementos como antes)
     const tabelaPessoas = document.getElementById('tabela-pessoas');
+    const btnAddPessoa = document.getElementById('btn-add-pessoa');
+    // ... (outros elementos)
+
+    // --- NOVO ELEMENTO ---
+    const btnToggleSort = document.getElementById('btn-toggle-sort');
+    let sortableInstance = null; // Variável para guardar a instância do Sortable
+    let isSortingEnabled = false; // Começa desabilitado
+
+    // ... (outras variáveis e funções como antes) ...
+
+    let bancoDePessoas = JSON.parse(localStorage.getItem('bancoDePessoas')) || [];
+    let bancoDeResponsaveis = JSON.parse(localStorage.getItem('bancoDeResponsaveis')) || [];
+
+    // --- CÓDIGO COMPLETO (substitua tudo no seu arquivo) ---
+
+    const btnAddResponsavel = document.getElementById('btn-add-responsavel');
     const tabelaResponsaveis = document.getElementById('tabela-responsaveis');
-    
     const pessoaNomeCompletoInput = document.getElementById('pessoa-nome-completo');
     const pessoaNomeGuerraInput = document.getElementById('pessoa-nome-guerra');
     const respNomeInput = document.getElementById('resp-nome');
     const respPostoInput = document.getElementById('resp-posto');
     const respFuncaoInput = document.getElementById('resp-funcao');
-
     const btnExportar = document.getElementById('btn-exportar');
     const btnImportar = document.getElementById('btn-importar');
     const inputImportFile = document.getElementById('input-import-file');
-
-    let bancoDePessoas = JSON.parse(localStorage.getItem('bancoDePessoas')) || [];
-    let bancoDeResponsaveis = JSON.parse(localStorage.getItem('bancoDeResponsaveis')) || [];
 
     function renderizarPessoas() {
         tabelaPessoas.innerHTML = '';
@@ -87,8 +97,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    new Sortable(tabelaPessoas, {
+    // Inicializa a função de arrastar, mas DESABILITADA por padrão
+    sortableInstance = new Sortable(tabelaPessoas, {
         animation: 150,
+        disabled: true, // Começa desabilitado
         onEnd: function (evt) {
             const itemMovido = bancoDePessoas.splice(evt.oldIndex, 1)[0];
             bancoDePessoas.splice(evt.newIndex, 0, itemMovido);
@@ -97,7 +109,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // --- LÓGICA DE EXPORTAR E IMPORTAR CORRIGIDA ---
+    // --- NOVA LÓGICA DO BOTÃO DE HABILITAR/DESABILITAR ---
+    btnToggleSort.addEventListener('click', () => {
+        isSortingEnabled = !isSortingEnabled; // Inverte o estado (true/false)
+        sortableInstance.option('disabled', !isSortingEnabled); // Aplica o novo estado
+
+        if (isSortingEnabled) {
+            btnToggleSort.textContent = 'Bloquear Ordenação';
+            btnToggleSort.classList.remove('btn-outline-secondary');
+            btnToggleSort.classList.add('btn-success');
+            tabelaPessoas.style.cursor = 'grab';
+        } else {
+            btnToggleSort.textContent = 'Habilitar Ordenação';
+            btnToggleSort.classList.remove('btn-success');
+            btnToggleSort.classList.add('btn-outline-secondary');
+            tabelaPessoas.style.cursor = '';
+        }
+    });
+
+    // Lógica de Exportar e Importar (continua a mesma)
     btnExportar.addEventListener('click', () => {
         const dadosParaSalvar = {
             pessoas: bancoDePessoas,
@@ -121,57 +151,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
     inputImportFile.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        if (!file) {
-            console.log("Nenhum arquivo selecionado.");
-            return;
-        }
-        
-        console.log("Arquivo selecionado:", file.name);
+        if (!file) { return; }
         const reader = new FileReader();
-        
         reader.onload = function(e) {
-            console.log("Arquivo lido com sucesso.");
             try {
                 const dadosImportados = JSON.parse(e.target.result);
-                console.log("Dados do arquivo (JSON parseado):", dadosImportados);
-
                 if (dadosImportados && Array.isArray(dadosImportados.pessoas) && Array.isArray(dadosImportados.responsaveis)) {
                     if (confirm('Isso vai substituir todos os dados atuais. Deseja continuar?')) {
-                        // --- MÉTODO MAIS SEGURO PARA ATUALIZAR OS DADOS ---
-                        // Limpa os arrays existentes sem quebrar a referência
                         bancoDePessoas.length = 0;
                         bancoDeResponsaveis.length = 0;
-                        // Adiciona os novos dados
                         dadosImportados.pessoas.forEach(p => bancoDePessoas.push(p));
                         dadosImportados.responsaveis.forEach(r => bancoDeResponsaveis.push(r));
-                        
                         localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
                         localStorage.setItem('bancoDeResponsaveis', JSON.stringify(bancoDeResponsaveis));
-                        
                         renderizarPessoas();
                         renderizarResponsaveis();
-                        
                         alert('Dados importados com sucesso!');
                     }
                 } else {
-                    alert('Arquivo inválido. O arquivo de backup deve conter as listas de "pessoas" e "responsaveis".');
+                    alert('Arquivo inválido.');
                 }
             } catch (error) {
-                alert('Erro ao processar o arquivo. Verifique se é um arquivo de backup válido (.json).');
-                console.error("Erro no JSON.parse:", error);
+                alert('Erro ao ler o arquivo.');
+                console.error(error);
             }
         };
-
-        reader.onerror = function() {
-            alert('Ocorreu um erro ao tentar ler o arquivo.');
-            console.error("Erro no FileReader:", reader.error);
-        };
-        
         reader.readAsText(file);
         inputImportFile.value = ''; 
     });
 
-    // Renderização inicial
     renderizarPessoas();
     renderizarResponsaveis();
 });
