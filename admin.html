@@ -23,14 +23,20 @@
                 <p>Use estes botões para salvar seus dados em um arquivo ou carregar de um backup.</p>
                 <button class="btn btn-info" id="btn-exportar">Exportar Dados</button>
                 <button class="btn btn-warning" id="btn-importar">Importar Dados</button>
-                <input type="file" id="input-import-file" class="d-none"> </div>
+                <input type="file" id="input-import-file" class="d-none">
+            </div>
         </section>
 
         <main class="row">
             <section class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Gerenciar Pessoas (clique e arraste para ordenar)</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Gerenciar Pessoas</span>
+                            <button class="btn btn-outline-secondary btn-sm" id="btn-toggle-sort">
+                                Habilitar Ordenação
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row g-2 mb-3">
