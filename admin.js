@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const respNomeInput = document.getElementById('resp-nome');
     const respPostoInput = document.getElementById('resp-posto');
     const respFuncaoInput = document.getElementById('resp-funcao');
-
+    const btnExportar = document.getElementById('btn-exportar');
+    const btnImportar = document.getElementById('btn-importar');
+    const btninputImportFile = document.getElementById('input-import-file');
+    
     let bancoDePessoas = JSON.parse(localStorage.getItem('bancoDePessoas')) || [];
     let bancoDeResponsaveis = JSON.parse(localStorage.getItem('bancoDeResponsaveis')) || [];
 
@@ -100,6 +103,59 @@ document.addEventListener('DOMContentLoaded', function () {
             // Renderiza a tabela novamente para atualizar os índices dos botões
             renderizarPessoas(); 
         }
+    });
+    // NOVA LÓGICA DE EXPORTAR E IMPORTAR //
+     btnExportar.addEventListener('click', () => {
+        const dadosParaSalvar = {
+            pessoas: bancoDePessoas,
+            responsaveis: bancoDeResponsaveis
+        };
+        const dadosString = JSON.stringify(dadosParaSalvar, null, 2);
+        const blob = new Blob([dadosString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_dados.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    btnImportar.addEventListener('click', () => {
+        inputImportFile.click(); // Abre a janela de seleção de arquivo
+    });
+
+    inputImportFile.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const dadosImportados = JSON.parse(e.target.result);
+                if (dadosImportados && dadosImportados.pessoas && dadosImportados.responsaveis) {
+                    if (confirm('Isso vai substituir todos os dados atuais. Deseja continuar?')) {
+                        bancoDePessoas = dadosImportados.pessoas;
+                        bancoDeResponsaveis = dadosImportados.responsaveis;
+                        localStorage.setItem('bancoDePessoas', JSON.stringify(bancoDePessoas));
+                        localStorage.setItem('bancoDeResponsaveis', JSON.stringify(bancoDeResponsaveis));
+                        renderizarPessoas();
+                        renderizarResponsaveis();
+                        alert('Dados importados com sucesso!');
+                    }
+                } else {
+                    alert('Arquivo inválido ou corrompido.');
+                }
+            } catch (error) {
+                alert('Erro ao ler o arquivo. Verifique se é um arquivo de backup válido.');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+        // Limpa o input para permitir importar o mesmo arquivo novamente
+        inputImportFile.value = ''; 
     });
 
     renderizarPessoas();
