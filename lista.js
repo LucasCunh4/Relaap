@@ -1,16 +1,24 @@
+// Função para formatar a data para exibição no cabeçalho (ex: 5 de Setembro de 2025)
+function formatarData(dataString) {
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const dataObj = new Date(dataString);
+    const dia = dataObj.getUTCDate();
+    const mes = meses[dataObj.getUTCMonth()];
+    const ano = dataObj.getUTCFullYear();
+    return `${dia} de ${mes} de ${ano}`;
+}
+
+// Evento que roda quando a página termina de carregar
 window.onload = function() {
     const dadosSalvos = localStorage.getItem('dadosDaLista');
 
+    // 1. Verifica se existem dados salvos no localStorage
     if (dadosSalvos) {
         try {
-            // Parse os dados UMA VEZ e guarde em uma variável
             const dados = JSON.parse(dadosSalvos);
 
-            // --- INÍCIO DA PARTE 1: LÓGICA DE PRÉ-VISUALIZAÇÃO ---
-            if (dados.textoEmNegrito) {
-                document.getElementById('conteudo-para-impressao').dataset.textoNegrito = 'true';
-            }
-
+            // 2. Monta a pré-visualização da lista na página
+            // (Usando o ID corrigido 'cabecalho-lista'. Se você usou 'cabecalho-tabela', ajuste aqui)
             document.getElementById('cabecalho-lista').innerHTML = `<h5>Relação dos alunos autorizados a licenciar às ${dados.horario}h do dia ${formatarData(dados.data)}</h5>`;
 
             const tabelaCorpo = document.getElementById('corpo-tabela-lista');
@@ -25,42 +33,36 @@ window.onload = function() {
             });
 
             document.getElementById('assinatura-lista').innerHTML = `<hr><p class="nome-responsavel">${dados.assinatura.nome}</p><p class="posto-responsavel">${dados.assinatura.posto}</p><p class="funcao-responsavel">${dados.assinatura.funcao}</p>`;
-            // --- FIM DA PARTE 1 ---
 
-
-            // --- INÍCIO DA PARTE 2: LÓGICA DO BOTÃO PDF (AGORA DENTRO DO IF) ---
+            // 3. Configura o botão de imprimir
             const btnImprimir = document.getElementById('btn-imprimir');
-            if (btnImprimir) { // Boa prática: verificar se o botão existe
+            if (btnImprimir) {
                 btnImprimir.addEventListener('click', function() {
-                    // Não precisa fazer o parse de novo, já temos a variável 'dados'
+                    
+                    // --- LÓGICA PARA O NOME DO ARQUIVO ---
+                    // Converte o horário "12:00" para "1200"
                     const horarioFormatado = dados.horario.replace(':', '');
-                    const partesData = dados.data.split('-');
-                    const diaFormatado = partesData[2];
-                    const mesFormatado = partesData[1];
-                    const dataFormatadaParaNome = diaFormatado + mesFormatado;
 
+                    // Converte a data "2025-09-05" para "0509"
+                    const partesData = dados.data.split('-'); // ["2025", "09", "05"]
+                    const diaFormatado = partesData[2]; // "05"
+                    const mesFormatado = partesData[1]; // "09"
+                    const dataFormatadaParaNome = diaFormatado + mesFormatado; // "0509"
+
+                    // Define o título da página, que será usado como nome do arquivo PDF
                     document.title = `N24.3-${horarioFormatado}-${dataFormatadaParaNome}`;
 
+                    // Aciona a janela de impressão
                     window.print();
                 });
             }
-            // --- FIM DA PARTE 2 ---
 
         } catch (e) {
-            console.error("Erro ao processar dados da lista:", e); // Mostra o erro no console para depuração
+            // Se houver erro na leitura dos dados, exibe mensagem de erro
             document.body.innerHTML = '<h1 class="text-center mt-5">Erro ao ler os dados da lista. Tente gerar novamente.</h1>';
         }
     } else {
+        // Se não encontrar dados, exibe mensagem de aviso
         document.body.innerHTML = '<h1 class="text-center mt-5">Nenhum dado de lista encontrado. Gere uma lista na página principal primeiro.</h1>';
     }
 };
-
-// A função formatarData permanece igual
-function formatarData(dataString) {
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const dataObj = new Date(dataString);
-    const dia = dataObj.getUTCDate();
-    const mes = meses[dataObj.getUTCMonth()];
-    const ano = dataObj.getUTCFullYear();
-    return `${dia} de ${mes} de ${ano}`;
-}
