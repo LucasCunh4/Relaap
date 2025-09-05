@@ -50,7 +50,7 @@ window.onload = function() {
                     const dataFormatadaParaNome = diaFormatado + mesFormatado; // "0509"
 
                     // Define o título da página, que será usado como nome do arquivo PDF
-                    document.title = `N24.3-${horarioFormatado}-${dataFormatadaParaNome}`;
+                    document.title = `N24．3-${horarioFormatado}-${dataFormatadaParaNome}`;
 
                     // Aciona a janela de impressão
                     window.print();
