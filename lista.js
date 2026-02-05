@@ -42,7 +42,7 @@ window.onload = function() {
                     const dataFormatadaParaNome = diaFormatado + mesFormatado;
                     
                     // Usando o caractere especial para o nome do arquivo funcionar com ponto
-                    const nomeFinalDoArquivo = `N24⋅3-${horarioFormatado}-${dataFormatadaParaNome}`;
+                    const nomeFinalDoArquivo = `N35⋅1-${horarioFormatado}-${dataFormatadaParaNome}`;
                     
                     document.title = nomeFinalDoArquivo;
                     window.print();
